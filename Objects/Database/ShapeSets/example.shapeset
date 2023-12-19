@@ -1,0 +1,21 @@
+{
+   "partList" : [
+      {
+         "box" : {
+            "x" : 1,
+            "y" : 1,
+            "z" : 1
+         },
+         "color" : "00ffff",
+         "name" : "Kinect Importer",
+         "physicsMaterial" : "Tape",
+         "renderable" : "$GAME_DATA/Objects/Renderable/decor/obj_decor_template.rend",
+         "rotationSet" : "PropY",
+         "scripted" : {
+            "classname" : "Kinect",
+            "filename" : "$CONTENT_DATA/Scripts/Kinect.lua"
+         },
+         "uuid" : "5c463a0b-757f-4058-bd57-0e86c3c88cc6"
+      }
+   ]
+}
