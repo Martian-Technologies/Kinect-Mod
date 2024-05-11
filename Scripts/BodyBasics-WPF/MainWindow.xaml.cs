@@ -410,6 +410,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                             }
                             json = json + "[\"" + body.HandLeftState.ToString() + "\",\"" + body.HandRightState.ToString() + "\",0]]";
                             File.WriteAllText("C:\\Users\\micha\\AppData\\Roaming\\Axolot Games\\Scrap Mechanic\\User\\User_76561197996475364\\Mods\\Kinect Mod\\Scripts\\Jsonlol.json", json);
+                            File.WriteAllText("C:\\Users\\micha\\Downloads\\Riggy McRig-Face Blender\\Jsonlol.json", json);
                             // Edit This with your file path ^^^^ to the Jsonlol.json
 
                         }

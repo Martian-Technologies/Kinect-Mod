@@ -8,6 +8,9 @@
             <Index name="5c463a0b-757f-4058-bd57-0e86c3c88cc6">
                 <Frame point="0 0"/>
             </Index>
+            <Index name="5d89c714-0d4e-46b2-9177-bad701c461b1">
+                <Frame point="96 0"/>
+            </Index>
         </Group>
     </Resource>
 </MyGUI>

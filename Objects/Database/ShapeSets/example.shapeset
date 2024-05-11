@@ -16,6 +16,23 @@
             "filename" : "$CONTENT_DATA/Scripts/Kinect.lua"
          },
          "uuid" : "5c463a0b-757f-4058-bd57-0e86c3c88cc6"
+      },
+      {
+         "box" : {
+            "x" : 1,
+            "y" : 1,
+            "z" : 1
+         },
+         "color" : "ffff00",
+         "name" : "Kinect Setter",
+         "physicsMaterial" : "Default",
+         "renderable" : "$GAME_DATA/Objects/Renderable/decor/obj_decor_mug.rend",
+         "rotationSet" : "Default",
+         "scripted" : {
+            "classname" : "Kinectset",
+            "filename" : "$CONTENT_DATA/Scripts/Kinectset.lua"
+         },
+         "uuid" : "5d89c714-0d4e-46b2-9177-bad701c461b1"
       }
    ]
 }

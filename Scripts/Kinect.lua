@@ -2,15 +2,40 @@
 Kinect = class()
 Kinect.maxParentCount = 1 
 Kinect.maxChildCount = -1 -- infinite
-Kinect.connectionInput = sm.interactable.connectionType.seated
+Kinect.connectionInput = sm.interactable.connectionType.seated + sm.interactable.connectionType.power
 Kinect.connectionOutput = sm.interactable.connectionType.power
 Kinect.colorNormal = sm.color.new(0xffff00ff)
 Kinect.colorHighlight = sm.color.new(0xffff55ff)
 LoaderID = nil
-
+kinectstuff = {"SpineBase",
+"SpineMid",
+"Neck",
+"Head",
+"ShoulderLeft",
+"ElbowLeft",
+"WristLeft",
+"HandLeft",
+"ShoulderRight",
+"ElbowRight",
+"WristRight",
+"HandRight",
+"HipLeft",
+"KneeLeft",
+"AnkleLeft",
+"FootLeft",
+"HipRight",
+"KneeRight",
+"AnkleRight",
+"FootRight",
+"SpineShoulder",
+"HandTipLeft",
+"ThumbLeft",
+"HandTipRight",
+"ThumbRight"
+}
+XYZ = {"X   (Left and Right)","Y   (Up and down)","Z   (Back and Front)"}
 function Kinect.server_onMelee(self)
-	print("xyz index")
-	sm.gui.chatMessage( "xyz index" )
+
 	local table = self.storage:load()
 	table[2] = table[2] + 1
 	if table[2] > 2 then
@@ -18,14 +43,15 @@ function Kinect.server_onMelee(self)
 	end
 	self.storage:save(table)
 	self.table = self.storage:load()
-	print(table[2])
-	sm.gui.chatMessage( tostring(table[2] ))
+	sm.gui.chatMessage( string.format("XYZ:     	%s",XYZ[table[2]+1]) )
+	print(string.format("XYZ: %s",XYZ[table[2]+1]))
+
+
 	self.network:sendToClients('clientTable', self.table)
 end
 
 function Kinect.server_onProjectile(self)
-	print("JOINT TYPE")
-	sm.gui.chatMessage( "JOINT TYPE" )
+
 	local table = self.storage:load()
 	table[1] = table[1] + 1
 	if table[1] > 24 then
@@ -33,8 +59,11 @@ function Kinect.server_onProjectile(self)
 	end
 	self.storage:save(table)
 	self.table = self.storage:load()
-	print(table[1])
-	sm.gui.chatMessage( tostring(table[1] ))
+
+	print(string.format("Joint Type: %s",table[1]))
+	sm.gui.chatMessage( string.format("Joint Type: %s",table[1]) )
+	sm.gui.chatMessage( string.format("Joint Name: %s",kinectstuff[table[1]+1]) )
+	print(string.format("Joint Name: %s",kinectstuff[table[1]+1]))
 	self.network:sendToClients('clientTable', self.table)
 end
 function Kinect.clientTable(self, tbl)
@@ -42,6 +71,9 @@ function Kinect.clientTable(self, tbl)
 end
 
 function Kinect.tryImportData(self)
+	if LoaderID == nil then
+		LoaderID = self.interactable:getId()
+	end
 	if self.interactable:getId() == LoaderID then
 		if pcall(self.tryImport) then
 			--print(AllJointPositions[1])
@@ -60,39 +92,53 @@ function Kinect.tryImport(self)
 end
 
 function Kinect.client_onFixedUpdate(self)
+	
+	--print(LoaderID==self.interactable:getId())
 	function self.playerSeat()
 		return self.interactable:getSingleParent():getSeatCharacter():getId()
 	end
-
+	function self.playerPower()
+		return self.interactable:getSingleParent():getPower()
+	end
 	self.idTest, self.why = pcall(self.playerSeat)
-	--print(self.idTest,self.why)
+	self.idTest2, self.why2 = pcall(self.playerPower)
 	if self.interactable:getSingleParent() ~= nil and self.idTest == true then
 		self.seat = self.interactable:getSingleParent()
-		--print(sm.localPlayer.getPlayer():getCharacter():getId())
-		--print(self.seat:getSeatCharacter():getId())
 		if self.seat:getSeatCharacter():getId() == sm.localPlayer.getPlayer():getCharacter():getId() then
-			
 			if self.isLoaded then
-				--print("E")
 				if self:tryImportData() then
 					local table = self.table
 					self.joint = table[1]
 					if table[2] == 1 then
-						--print((AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40))
 						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40))
-						
-						--self.interactable:setPower(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40)
 					elseif table[2] == 0 then
 						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * -20))
-						--self.interactable:setPower(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * -20)
 					else
 						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20))
-						--self.interactable:setPower(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20)
 					end
 				end
 			end
 		end
+	elseif self.interactable:getSingleParent() ~= nil and self.idTest2 == true and self.idTest == false then
+		if  self.interactable:getSingleParent():getPower() == sm.localPlayer.getPlayer():getCharacter():getId() then
+			if self.isLoaded then
+				if self:tryImportData() then
+					local table = self.table
+					self.joint = table[1]
+					if table[2] == 1 then
+						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40))
+					elseif table[2] == 0 then
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * -20))
+					else
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20))
+					end
+				end
+			end
+		end
+	
 	end
+		--print(sm.localPlayer.getPlayer():getCharacter():getId())
+		--print(self.seat:getSeatCharacter():getId())
 end
 function Kinect.server_onFixedUpdate(self)
 	self.table = self.storage:load()
@@ -107,19 +153,28 @@ function Kinect.client_onInteract(self, character, state)
 	local table = self.table
 	LoaderID = self.interactable:getId()
 	--if state==false then
-		print('---------------')
+	if state == true then
 		sm.gui.chatMessage( '---------------')
-		print("JOINT TYPE")
-		sm.gui.chatMessage( "JOINT TYPE" )
-		print(table[1])
-		sm.gui.chatMessage( tostring(table[1]) )
-		print("xyz index")
-		sm.gui.chatMessage( "xyz index" )
-		print(table[2])
-		sm.gui.chatMessage( tostring(table[2]))
-	--end
+		print('---------------')
+		sm.gui.chatMessage( string.format("Joint Name: %s",kinectstuff[table[1]+1]) )
+		print(string.format("Joint Name: %s",kinectstuff[table[1]+1]))
+		sm.gui.chatMessage( string.format("Joint Type: %s",table[1]) )
+		print(string.format("Joint Type: %s",table[1]))
+		sm.gui.chatMessage( string.format("XYZ:     	%s",XYZ[table[2]+1]) )
+		print(string.format("XYZ: %s",XYZ[table[2]+1]))
+		sm.gui.chatMessage( string.format("XYZ Index: %s",table[2]) )
+		print(string.format("XYZ Index: %s",table[2]))
+		
+	end
 end
-
+function Kinect.client_canInteract(self,character3)
+	local table = self.table
+	if table[1] ~= nil and character3 ~= nil then
+		sm.gui.setInteractionText(string.format("Joint Name:  %s",kinectstuff[table[1]+1]))
+		sm.gui.setInteractionText(string.format("XYZ:  %s",XYZ[table[2]+1]))
+	end
+    return true
+end
 function Kinect.server_onCreate(self)
 	
 	if LoaderID == nil then
@@ -140,4 +195,9 @@ function Kinect.server_onRefresh( self )
 end
 function Kinect.clientCreate(self)
 	self.isLoaded = true
+end
+function Kinect.server_onDestroy(self)
+	if LoaderID == self.interactable:getId() then
+		LoaderID = nil
+	end
 end
