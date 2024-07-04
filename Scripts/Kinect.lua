@@ -110,11 +110,11 @@ function Kinect.client_onFixedUpdate(self)
 					local table = self.table
 					self.joint = table[1]
 					if table[2] == 1 then
-						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40))
+						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] ))
 					elseif table[2] == 0 then
-						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * -20))
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1])*-1)
 					else
-						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20))
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] ))
 					end
 				end
 			end
@@ -126,11 +126,11 @@ function Kinect.client_onFixedUpdate(self)
 					local table = self.table
 					self.joint = table[1]
 					if table[2] == 1 then
-						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20 + 40))
+						self.network:sendToServer('server_writePower', (AllJointPositions[table[1] + 1][table[2] + 1] ))
 					elseif table[2] == 0 then
-						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * -20))
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1])*-1)
 					else
-						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1] * 4 * 20))
+						self.network:sendToServer('server_writePower',(AllJointPositions[table[1] + 1][table[2] + 1]  ))
 					end
 				end
 			end
